@@ -19,11 +19,11 @@ struct Note {
 class Phonebook {
 	public:
 		unordered_map <string, Data> database;
-		Phonebook(unordered_map<string, Data> &cnt) {
+		Phonebook(unordered_map<string, Data>& cnt) {
 			database = cnt;
 		}
 
-		bool checkExistance(string &cnt) {
+		bool checkExistance(string& cnt) {
 			if (database.find(cnt) != database.end()) {
 				return true;
 			}
@@ -38,7 +38,7 @@ class Phonebook {
 			else {
 				return "No such contact in the list.";
 			}
- 		}
+		}
 };
 
 class Notes {
