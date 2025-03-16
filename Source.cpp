@@ -25,103 +25,103 @@ string requestInput() {
 }
 
 class Phonebook {
-	public:
-		unordered_map <string, Data> database;
-		Phonebook(unordered_map<string, Data>& cnts) {
-			database = cnts;
+public:
+	unordered_map <string, Data> database;
+	Phonebook(unordered_map<string, Data>& cnts) {
+		database = cnts;
+	}
+
+	bool checkExistance(string& cnt) {
+		if (database.find(cnt) != database.end()) {
+			return true;
+		}
+		else { return false; }
+	}
+
+	string createContact(string name, string num) {
+		Data new_cnt;
+		new_cnt.num = num;
+
+		database[name] = new_cnt;
+
+		return name;
+	}
+
+	string sendSMS(string contact, string message) {
+		if (!checkExistance(contact)) {
+			createContact(contact, requestInput());
 		}
 
-		bool checkExistance(string& cnt) {
-			if (database.find(cnt) != database.end()) {
-				return true;
-			}
-			else { return false; }
-		}
-
-		string createContact(string name, string num) {
-			Data new_cnt;
-			new_cnt.num = num;
-
-			database[name] = new_cnt;
-
-			return name;
-		}
-
-		string sendSMS(string contact, string message) {
-			if (!checkExistance(contact)) {
-				createContact(contact, requestInput());	
-			}
-
-			database[contact].msgs.push_back(message);
-			return "You said \"" + message + "\" to \'" + contact + "\'.\n";
-		}
+		database[contact].msgs.push_back(message);
+		return "You said \"" + message + "\" to \'" + contact + "\'.\n";
+	}
 };
 
 class Notes {
-	public:
-		vector<Note> all_notes;
-		Notes(vector<string>& pre_saved_nts) {
-			for (string note : pre_saved_nts) {
-				Note memo;
-				memo.content = note;
-				memo.root = "local";
-				memo.type = "txt";
-				all_notes.push_back(memo);
-			}
+public:
+	vector<Note> all_notes;
+	Notes(vector<string>& pre_saved_nts) {
+		for (string note : pre_saved_nts) {
+			Note memo;
+			memo.content = note;
+			memo.root = "local";
+			memo.type = "txt";
+			all_notes.push_back(memo);
+		}
+	}
+
+	void importMSG(unordered_map<string, Data>& database) {
+		int i, chosen, to_import;
+		string ext_from;
+		vector<string> names;
+
+		i = 1;
+		for (const auto& contact : database) {
+			cout << "[" << i << "] " << contact.first << " :: (" << contact.second.num << ");\n";
+			names.push_back(contact.first);
+			i++;
 		}
 
-		void importMSG(unordered_map<string, Data>& database) {
-			int i, chosen, to_import;
-			string ext_from;
-			vector<string> names;
 
-			i = 1;
-			for (const auto& contact : database) {
-				cout << "[" << i << "] " << contact.first << " :: (" << contact.second.num << ");\n";
-				names.push_back(contact.first);
-				i++;
-			}
+		cout << "Which chat are we importing a message from? [enter index]: ";
+		cin >> chosen;
+		ext_from = names[chosen - 1];
 
 
-			cout << "Which chat are we importing a message from? [enter index]: ";
-			cin >> chosen;
-			ext_from = names[chosen - 1];
-
-
-			i = 1;
-			for (string msg : database[ext_from].msgs) {
-				cout << "[" << i << "] " << msg << "\n";
-				i++;
-			}
-
-			cout << "Which message are we importing? [enter index]: ";
-			cin >> to_import;
-			Note formedNote;
-			formedNote.content = database[ext_from].msgs[to_import-1];
-			formedNote.root = "pb";
-			formedNote.type = "txt";
-
-			all_notes.push_back(formedNote);
-		};
-		void showAll() {
-			int i = 1;
-			for (Note memo : all_notes) {
-				cout << "\nMemo #" << i << endl;
-				cout << memo.content << endl;
-				cout << "(" << memo.root << ")" << endl;
-				i++;
-			}
+		i = 1;
+		for (string msg : database[ext_from].msgs) {
+			cout << "[" << i << "] " << msg << "\n";
+			i++;
 		}
 
-		Note selectMemo() {
-			int to_select;
+		cout << "Which message are we importing? [enter index]: ";
+		cin >> to_import;
+		Note formedNote;
+		formedNote.content = database[ext_from].msgs[to_import - 1];
+		formedNote.root = "pb";
+		formedNote.type = "txt";
 
-			showAll();
-			
-			cout << "Which MEMO you wanna select? [enter index]: ";
-			cin >> to_select;
-			return all_notes[to_select - 1];
+		all_notes.push_back(formedNote);
+	};
+	void showAll() {
+		int i = 1;
+		for (Note memo : all_notes) {
+			cout << "\nMemo #" << i << endl;
+			cout << memo.content << endl;
+			cout << "(" << memo.root << ")" << endl;
+			i++;
 		}
+	}
+
+	Note selectMemo() {
+		int to_select;
+
+		showAll();
+
+		cout << "Which MEMO you wanna select? [enter index]: ";
+		cin >> to_select;
+		return all_notes[to_select - 1];
+	}
 };
 
 
