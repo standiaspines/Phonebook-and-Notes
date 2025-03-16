@@ -48,15 +48,12 @@ class Phonebook {
 		}
 
 		string sendSMS(string contact, string message) {
-			if (checkExistance(contact)) {
-				database[contact].msgs.push_back(message);
-				return "You said \"" + message + "\" to \'" + contact + "\'.\n";
+			if (!checkExistance(contact)) {
+				createContact(contact, requestInput());	
 			}
-			else {
-				createContact(contact, requestInput());
-				database[contact].msgs.push_back(message);
-				//return "No such contact in the list.";
-			}
+
+			database[contact].msgs.push_back(message);
+			return "You said \"" + message + "\" to \'" + contact + "\'.\n";
 		}
 };
 
@@ -129,9 +126,8 @@ class Notes {
 
 
 
-void sendMemoAsMSG(string cnt, Notes nb, Phonebook phb) {
+void sendMemoAsMSG(string cnt, Notes& nb, Phonebook& phb) {
 	phb.checkExistance(cnt);
-	cout << nb.selectMemo().content;
 	cout << phb.sendSMS(cnt, nb.selectMemo().content);
 }
 
@@ -159,6 +155,7 @@ int main() {
 	for (string msg : phone.database["Damian"].msgs) {
 		cout << msg << endl;
 	}
+	//cout << phone.database["Damian"].msgs[3];
 
 	return 0;
 }
